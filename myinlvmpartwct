@@ -282,8 +282,8 @@ sed -ie "s/patomic/$hdisk/g" $tmp/iso_new/$seed_file
 fi
 #changing the preseed to lvm
 if [[ $clvm == "yes" ]] || [[ $clvm == "y" ]]; then
-sed -ie "181 s/^/#/" $tmp/iso_new/$seed_file
-sed -ie "187 s/^/#/" $tmp/iso_new/$seed_file
+sed -ie "182 s/^/#/" $tmp/iso_new/$seed_file
+sed -ie "188 s/^/#/" $tmp/iso_new/$seed_file
 sed -i '190id-i partman/confirm_write_new_label boolean true' $tmp/iso_new/$seed_file
 sed -i '191id-i partman/choose_partition select finish' $tmp/iso_new/$seed_file
 sed -i '192id-i partman/confirm_nooverwrite boolean true' $tmp/iso_new/$seed_file
