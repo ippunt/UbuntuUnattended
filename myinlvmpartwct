@@ -127,6 +127,8 @@ fi
 read -ep " Make ISO bootable via USB: " -i "yes" bootable
 read -ep " Would you like to make a bootable disk with dd: " -i "yes" usedd
 if [[ $usedd == "yes" ]] || [[ $usedd == "y" ]]; then
+  echo " You available devices are:"
+  ls /dev | grep "sd"
   echo " Please use full disk name ie /dev/sdc without partition"
   read -p "What disk would you like to use:" disk
 fi
