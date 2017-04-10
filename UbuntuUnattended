@@ -359,18 +359,32 @@ echo
 
 # unset vars
 unset username
+unset domain
 unset upassword
 unset upassword2
 unset rpassword
 unset rpassword2
 unset hostname
 unset timezone
-unset pwhash
-unset rootpwhash
+unset upwhash
+unset rpwhash
+unset bootable
+unset usedd
+unset inap
+unset ct
+unset dhcp
+unset ipaddr
+unset mask
+unset gateway
+unset dns
 unset download_file
 unset download_location
 unset new_iso_name
 unset tmp
+unset preseed
+unset prep
+unset pre
 unset seed_file
+unset clvm
 unset tdisk
 unset hdisk
