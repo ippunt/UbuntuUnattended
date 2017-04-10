@@ -4,7 +4,6 @@
 
 #file names & paths
 tmp="/tmp"  # destination folder to store the final iso file
-#hostname="ubuntu" 
 currentuser="$( whoami)"
 
 # define spinner function for slow tasks
@@ -113,16 +112,6 @@ if [[ "$upassword" != "$upassword2" ]]; then
     echo
     exit
 fi
-read -sp " please enter your preferred root password: " rpassword
-printf "\n"
-read -sp " confirm your root password: " rpassword2
-printf "\n"
-# check if the passwords match to prevent headaches
-if [[ "$rpassword" != "$rpassword2" ]]; then
-    echo " your passwords do not match; please restart the script and try again"
-    echo
-    exit
-fi
 
 read -ep " Make ISO bootable via USB: " -i "yes" bootable
 read -ep " Would you like to make a bootable disk with dd: " -i "yes" usedd
@@ -147,6 +136,13 @@ done
 fi
 apfl="d-i preseed/late_command string apt-install $ap15 $ap14 $ap13 $ap12 $ap11 $ap10 $ap9 $ap8 $ap7 $ap6 $ap5 $ap4 $ap3 $ap2 $ap1"
 echo $apfl
+read -ep "Would you like to set up your own network config and not use DHCP?" -i "no" dhcp
+if [[ $dhcp == "yes" ]] || [[ $dhcp == "y" ]]; then
+read -p "What would you like your ip to be--->" ipaddr
+read -p "What would you like your subnet mask to be ie 255.255.255.0--->" mask
+read -p "What would you like your default gateway to be --->" gateway
+read -p "What would you like your DNS to be--->" dns
+fi
 
 
 read -ep "The default is to install on /dev/sda if you are choosing that method and not installing on lvm please answer yes:" -i "yes" tdisk
@@ -306,16 +302,17 @@ fi
 #echo "
 # setup firstrun script
 #d-i preseed/late_command string $late_command" >> $tmp/iso_new/$seed_file
-
+if [[ $dhcp == "yes" ]] || [[ $dhcp == "y" ]]; then
+sed -i "s@#d-i netcfg/disable_autoconfig boolean true@d-i netcfg/disable_autoconfig boolean true@g" $tmp/iso_new/$seed_file
+sed -i "s@#d-i netcfg/get_ipaddress string ipaddr@d-i netcfg/get_ipaddress string $ipaddr@g" $tmp/iso_new/$seed_file
+sed -ie "s@#d-i netcfg/get_netmask string mask@d-i netcfg/get_netmask string $mask@g" $tmp/iso_new/$seed_file
+sed -ie "s@#d-i netcfg/get_gateway string gateway@d-i netcfg/get_gateway string $gateway@g" $tmp/iso_new/$seed_file
+sed -ie "s@#d-i netcfg/get_nameservers string dns@d-i netcfg/get_nameservers string $dns@g" $tmp/iso_new/$seed_file
+sed -i "s@#d-i netcfg/confirm_static boolean true@d-i netcfg/confirm_static boolean true@g" $tmp/iso_new/$seed_file
+fi
 # generate the password hash not using this currently
-#pwhash=$(echo $upassword | mkpasswd -s -m sha-512)
+pwhash=$(echo $upassword | mkpasswd -s -m sha-512)
 #rootpwhash=$(echo $rpassword | mkpasswd -s -m sha-512)
-
-
-# update the seed file to reflect the users' choices
-
-#example of changing seperator for sed
-#sed -i "s@{{username}}@$username@g" $tmp/iso_new/$seed_file
 
 # calculate checksum for seed file
 #seed_checksum=$(md5sum $tmp/iso_new/$seed_file)
@@ -323,8 +320,7 @@ fi
 #my own sed begins example to follow sed -ie 's/few/asd/g' hello.txt
 sed -ie "s/pusername/$username/g" $tmp/iso_new/$seed_file
 sed -ie "s/phostname/$hostname/g" $tmp/iso_new/$seed_file
-sed -ie "s/pupassword/$upassword/g" $tmp/iso_new/$seed_file
-sed -ie "s/prpassword/$rpassword/g" $tmp/iso_new/$seed_file
+sed -ie "s@upwhash@$upwhash@g" $tmp/iso_new/$seed_file
 sed -ie "s/pdomain/$domain/g" $tmp/iso_new/$seed_file 
 
 
