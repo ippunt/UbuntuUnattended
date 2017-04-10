@@ -311,7 +311,7 @@ sed -ie "s@#d-i netcfg/get_nameservers string dns@d-i netcfg/get_nameservers str
 sed -i "s@#d-i netcfg/confirm_static boolean true@d-i netcfg/confirm_static boolean true@g" $tmp/iso_new/$seed_file
 fi
 # generate the password hash not using this currently
-pwhash=$(echo $upassword | mkpasswd -s -m sha-512)
+upwhash=$(echo $upassword | mkpasswd -s -m sha-512)
 #rootpwhash=$(echo $rpassword | mkpasswd -s -m sha-512)
 
 # calculate checksum for seed file
